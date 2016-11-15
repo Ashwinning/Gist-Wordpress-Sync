@@ -10,7 +10,10 @@ import datetime, xmlrpclib
 
 #Project files
 from GWSUtils import *
+from GWSCredentials import GWSLogin
 
+#Initialize
+gwsLogin = GWSLogin()
 
 '''
 The GistPost Class.
@@ -38,7 +41,7 @@ wordpressPosts = []
 '''
 Create the Wordpress Client which will retrieve and post posts
 '''
-wp = Client('http://ash.wine/xmlrpc.php', 'USERNAME', 'PASSWORD')
+wp = Client('http://ash.wine/xmlrpc.php', gwsLogin.username, gwsLogin.password)
 
 
 '''
