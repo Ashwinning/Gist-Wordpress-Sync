@@ -38,6 +38,5 @@ def BodyBuilder(body, url):
         text += '\n'
         text += '<div class="gist-meta">'
         text += '<a href="' + url + GenerateAnchor(body.filename) + '">'+filename+'</a>'
-        text += 'hosted with <img draggable="false" class="emoji" alt="❤" src="https://s.w.org/images/core/emoji/2/svg/2764.svg"> by <a href="https://github.com">GitHub</a>'
         text += '</div>'
         text += '\n'

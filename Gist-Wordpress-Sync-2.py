@@ -30,7 +30,7 @@ A list of all the Wordpress Posts
 '''
 wordpressPosts = []
 
-"""
+
 '''
 Create the Wordpress Client which will retrieve and post posts
 '''
@@ -53,7 +53,7 @@ while True:
         if 'Hacks' in str(post.terms):
             wordpressPosts.append(post)
     wpOffset = wpOffset + wpIncrement
-"""
+
 
 
 '''
@@ -76,6 +76,9 @@ while True:
         #if it's got the gistblog hashtag, add it to the list
         if GistBlogExists(tags):
             body = []
+            print (description)
+            print (item['updated_at'])
+            print ('---')
             for file in item['files']:
                 language = item['files'][file]['language']
                 if (language == 'Markdown'):
@@ -86,7 +89,7 @@ while True:
                 else:
                     rawURL = item['files'][file]['raw_url']
                     dlFile = GetFile(rawURL)
-                    wrap = WrapCode(dlFile)
+                    wrap = WrapCode(language, dlFile)
                     parsed = ParseMarkdown(wrap)
                     body.append(GistBody(file,parsed))
                 #Save the description as the title
@@ -95,7 +98,7 @@ while True:
     offset = offset + increment
     page += 1
 
-"""
+
 '''
 Remove all gistBlogs from list which already exist
 in wordpressPosts
@@ -127,6 +130,11 @@ for gistBlog in gistBlogs:
             'post_tag': gistBlog.tags,
             'category': ['hacks'],
     }
+    post.custom_fields = []
+    post.custom_fields.append({
+        'key': 'updated_at',
+        'value': 2
+        })
     post.post_status = 'publish'
     timestamp = TimeSanitizer(gistBlog.created_at)
     post.date = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M")
@@ -134,4 +142,3 @@ for gistBlog in gistBlogs:
     gistsPosted += 1
     print (str(gistsPosted) + ') ' + titleToPost + ' posted.')
 print ('COMPLETE! ' + str(gistsPosted) + ' new gists posted.')
-"""
