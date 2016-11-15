@@ -90,8 +90,8 @@ while True:
                     parsed = ParseMarkdown(wrap)
                     body.append(GistBody(file,parsed))
                 #Save the description as the title
-                #gistPost = GistPost(description, item['html_url'], RemoveGistBlog(tags), item['created_at'])
-                #gistBlogs.append(gistPost)
+                gistPost = GistPost(description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body))
+                gistBlogs.append(gistPost)
     offset = offset + increment
     page += 1
 

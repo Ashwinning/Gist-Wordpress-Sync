@@ -26,3 +26,18 @@ So that code can be parsed as markdown by the API
 '''
 def WrapCode(language, text):
     return '```'+language+'\n'+text+'\n```'
+
+
+'''
+Generates and adds the links to the files.
+'''
+def BodyBuilder(body, url):
+    text = ""
+    for thing in body:
+        text += thing.body
+        text += '\n'
+        text += '<div class="gist-meta">'
+        text += '<a href="' + url + GenerateAnchor(body.filename) + '">'+filename+'</a>'
+        text += 'hosted with <img draggable="false" class="emoji" alt="❤" src="https://s.w.org/images/core/emoji/2/svg/2764.svg"> by <a href="https://github.com">GitHub</a>'
+        text += '</div>'
+        text += '\n'

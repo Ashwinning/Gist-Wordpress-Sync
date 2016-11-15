@@ -1,3 +1,5 @@
+from GWSUtils import *
+
 '''
 The GistPost Class.
 '''
@@ -8,6 +10,8 @@ class GistPost:
         self.tags = tags
         self.created_at = created_at
         self.body = body
+
+
 
 '''
 The GistBody Class.
