@@ -41,7 +41,7 @@ wordpressPosts = []
 '''
 Create the Wordpress Client which will retrieve and post posts
 '''
-wp = Client('http://ash.wine/xmlrpc.php', gwsLogin.username, gwsLogin.password)
+wp = Client(gwsLogin.WORDPRESS_URL+'/xmlrpc.php', gwsLogin.WORDPRESS_USERNAME, gwsLogin.WORDPRESS_PASSWORD)
 
 
 '''
