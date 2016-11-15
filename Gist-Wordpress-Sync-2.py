@@ -38,8 +38,9 @@ wp = Client(settings['WORDPRESS_URL']+'/xmlrpc.php', settings['WORDPRESS_USERNAM
 
 
 '''
-Get all Wordpress posts (in batches of 20) from the Hacks category
+Get all Wordpress posts (in batches of 20) from the specified category.
 And add all the titles to the wordpressPosts list.
+If no category is specified, then gets all posts, and does not categorize posts.
 '''
 wpOffset = 0
 wpIncrement = 20
@@ -49,8 +50,8 @@ while True:
         print ('Imported ' + str(len(wordpressPosts)) + ' Wordpress posts.')
         break  # no more posts returned
     for post in posts:
-        #if it's in the hacks category, add it to the list
-        if 'Hacks' in str(post.terms):
+        #if it's in the specified category, add it to the list
+        if settings['WORDPRESS_CATEGORY'] in str(post.terms):
             wordpressPosts.append(post)
     wpOffset = wpOffset + wpIncrement
 
@@ -93,7 +94,7 @@ while True:
                     parsed = ParseMarkdown(wrap)
                     body.append(GistBody(file,parsed))
                 #Save the description as the title
-                gistPost = GistPost(description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body))
+                gistPost = GistPost(item['id'], description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body), item['updated_at'])
                 gistBlogs.append(gistPost)
     offset = offset + increment
     page += 1
@@ -101,7 +102,7 @@ while True:
 
 '''
 Remove all gistBlogs from list which already exist
-in wordpressPosts
+in wordpressPosts, if their
 '''
 for wordpressPost in wordpressPosts:
     for gistBlog in gistBlogs:
@@ -133,12 +134,16 @@ for gistBlog in gistBlogs:
     post.custom_fields = []
     post.custom_fields.append({
         'key': 'updated_at',
-        'value': 2
+        'value': gistBlog.updated_at
+        })
+    post.custom_fields.append({
+        'key': 'id',
+        'value': gistBlog.id
         })
     post.post_status = 'publish'
     timestamp = TimeSanitizer(gistBlog.created_at)
     post.date = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M")
-    #post.id = wp.call(NewPost(post))
+    post.id = wp.call(NewPost(post))
     gistsPosted += 1
     print (str(gistsPosted) + ') ' + titleToPost + ' posted.')
 print ('COMPLETE! ' + str(gistsPosted) + ' new gists posted.')
