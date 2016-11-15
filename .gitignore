@@ -1,5 +1,6 @@
 #Credentials
 .login
+.settings
 
 #Python
 *.pyc

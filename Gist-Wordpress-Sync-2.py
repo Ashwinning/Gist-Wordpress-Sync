@@ -10,10 +10,10 @@ import datetime, xmlrpclib
 
 #Project files
 from GWSUtils import *
-from GWSCredentials import GWSLogin
+from GWSSettings import GWSSettings
 
 #Initialize
-gwsLogin = GWSLogin()
+gwsSettings = GWSSettings()
 
 '''
 The GistPost Class.
