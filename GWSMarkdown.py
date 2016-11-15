@@ -1,4 +1,7 @@
 import requests
+from GWSUtils import *
+from GWSSettings import *
+
 
 '''
 Posts Markdown to be parsed to the GitHub API
@@ -9,7 +12,11 @@ def ParseMarkdown(text):
     headers = {
         'content-type': "text/x-markdown"
         }
-    response = requests.request("POST", url, data=text, headers=headers)
+    parameters = {'access_token': settings['GITHUB_ACCESS_TOKEN']}
+    if not settings['GITHUB_ACCESS_TOKEN']:
+        response = requests.request("POST", url, data=text, headers=headers)
+    else:
+        response = requests.request("POST", url, data=text, headers=headers, params=parameters)
     return response.text
 
 '''
@@ -34,9 +41,10 @@ Generates and adds the links to the files.
 def BodyBuilder(body, url):
     text = ""
     for thing in body:
-        text += thing.body
+        #print ('thing ' + thing.content)
+        text += thing.content
         text += '\n'
         text += '<div class="gist-meta">'
-        text += '<a href="' + url + GenerateAnchor(body.filename) + '">'+filename+'</a>'
+        text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
         text += '</div>'
         text += '\n'

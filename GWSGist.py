@@ -19,6 +19,6 @@ class GistPost:
 The GistBody Class.
 '''
 class GistBody:
-    def __init__(self, filename, body):
+    def __init__(self, filename, content):
         self.filename = filename
-        self.body = body
+        self.content = content

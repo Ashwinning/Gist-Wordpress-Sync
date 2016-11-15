@@ -15,7 +15,8 @@ Removes the gistblog hashtag from a list
 and returns the remaining hashtags
 '''
 def RemoveGistBlog(tags):
-    tags.remove('gistblog')
+    if 'gistblog' in tags:
+        tags.remove('gistblog')
     return tags;
 
 
@@ -71,3 +72,13 @@ def GenerateAnchor(filename):
     filename = filename.replace(".", "-")
     value = '#file-'+filename
     return value
+
+
+'''
+Stores custom fields from WordPressPost to a dictionary.
+'''
+def GetCustomFields(custom_fields):
+    dict = {}
+    for custom_field in WordPressPost.custom_fields:
+        dict[custom_field['key']] = custom_field['value']
+    return dict

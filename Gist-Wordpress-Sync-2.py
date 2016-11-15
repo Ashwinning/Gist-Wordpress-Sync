@@ -66,11 +66,16 @@ offset = 0
 increment = 20
 while True:
     #Make HTTP request to GitHub API
-    r = requests.get('http://api.github.com/users/'+settings['GITHUB_USERNAME']+'/gists?page='+str(page)+'&per_page='+str(increment))
+    parameters = {'access_token': settings['GITHUB_ACCESS_TOKEN']}
+    if not settings['GITHUB_ACCESS_TOKEN']:
+        r = requests.get('http://api.github.com/users/'+settings['GITHUB_USERNAME']+'/gists?page='+str(page)+'&per_page='+str(increment))
+    else:
+        r = requests.get('http://api.github.com/users/'+settings['GITHUB_USERNAME']+'/gists?page='+str(page)+'&per_page='+str(increment), params=parameters)
     response = r.json()
     if str(response) == '[]':
         print('Imported ' + str(len(gistBlogs)) + ' Gists.')
         break  # no more posts returned
+    count = 0
     for item in response:
         description = item['description']
         tags = GetTags(description)
@@ -94,8 +99,13 @@ while True:
                     parsed = ParseMarkdown(wrap)
                     body.append(GistBody(file,parsed))
                 #Save the description as the title
-                gistPost = GistPost(item['id'], description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body), item['updated_at'])
+                #print ('tags : ' + str(tags))
+                gistPost = GistPost(item['id'], description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body, item['html_url']), item['updated_at'])
                 gistBlogs.append(gistPost)
+        count += 1
+        if count > 1:
+            break
+
     offset = offset + increment
     page += 1
 
@@ -106,11 +116,16 @@ in wordpressPosts, if their
 '''
 for wordpressPost in wordpressPosts:
     for gistBlog in gistBlogs:
-        if wordpressPost.title in gistBlog.title:
-            #Remove this gistblog
-            gistBlogs.remove(gistBlog)
+        wpField = GetCustomFields(wordPressPost.custom_fields) #Gets the custom_fields in a dict
+        if gistBlog.id == wpField['id']:
+            #Post already exists in wordpress
+            if gistBlog.updated_at == wpField['updated_at']:
+                #Exact post exists, remove it from our gistblog list
+                gistBlogs.remove(gistBlog)
+            else:
+                #wordpressPost is older, delete it so we can add the latest one
+                wp.call(DeletePost(wordpressPost.id))
             break #Move to next wordpressPost
-
 
 '''
 Display the number of gists to be posted
@@ -143,7 +158,7 @@ for gistBlog in gistBlogs:
     post.post_status = 'publish'
     timestamp = TimeSanitizer(gistBlog.created_at)
     post.date = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M")
-    post.id = wp.call(NewPost(post))
+    #post.id = wp.call(NewPost(post))
     gistsPosted += 1
     print (str(gistsPosted) + ') ' + titleToPost + ' posted.')
 print ('COMPLETE! ' + str(gistsPosted) + ' new gists posted.')
