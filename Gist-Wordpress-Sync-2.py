@@ -10,10 +10,11 @@ import datetime, xmlrpclib
 
 #Project files
 from GWSUtils import *
-from GWSSettings import GWSSettings
+from GWSSettings import *
 
 #Initialize
 gwsSettings = GWSSettings()
+#print('settings = ' + str(settings))
 
 '''
 The GistPost Class.
@@ -41,7 +42,7 @@ wordpressPosts = []
 '''
 Create the Wordpress Client which will retrieve and post posts
 '''
-wp = Client(gwsLogin.WORDPRESS_URL+'/xmlrpc.php', gwsLogin.WORDPRESS_USERNAME, gwsLogin.WORDPRESS_PASSWORD)
+wp = Client(settings['WORDPRESS_URL']+'/xmlrpc.php', settings['WORDPRESS_USERNAME'], settings['WORDPRESS_PASSWORD'])
 
 
 '''
@@ -70,7 +71,7 @@ offset = 0
 increment = 20
 while True:
         #Make HTTP request to GitHub API
-        r = requests.get('http://api.github.com/users/ashwinning/gists?page='+str(page)+'&per_page='+str(increment))
+        r = requests.get('http://api.github.com/users/'+settings['GITHUB_USERNAME']+'/gists?page='+str(page)+'&per_page='+str(increment))
         response = r.json()
         if str(response) == '[]':
                 print('Imported ' + str(len(gistBlogs)) + ' Gists.')
