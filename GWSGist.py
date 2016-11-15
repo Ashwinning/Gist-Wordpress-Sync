@@ -4,7 +4,7 @@ from GWSUtils import *
 The GistPost Class.
 '''
 class GistPost:
-    def __init__(self, id, title, url, tags, created_at, body, updated_at):
+    def __init__(self, id, title, url, tags, created_at, body, updated_at, item):
         self.id = id
         self.title = title
         self.url = url
@@ -12,6 +12,7 @@ class GistPost:
         self.created_at = created_at
         self.body = body
         self.updated_at = updated_at
+        self.item = item
 
 
 

@@ -75,48 +75,31 @@ while True:
     if str(response) == '[]':
         print('Imported ' + str(len(gistBlogs)) + ' Gists.')
         break  # no more posts returned
-    count = 0
+
     for item in response:
         description = item['description']
         tags = GetTags(description)
         #if it's got the gistblog hashtag, add it to the list
         if GistBlogExists(tags):
-            body = []
             print (description)
             print (item['updated_at'])
             print ('---')
-            for file in item['files']:
-                language = item['files'][file]['language']
-                if (language == 'Markdown'):
-                    rawURL = item['files'][file]['raw_url']
-                    dlFile = GetFile(rawURL)
-                    parsed = ParseMarkdown(dlFile)
-                    body.append(GistBody(file, parsed))
-                else:
-                    rawURL = item['files'][file]['raw_url']
-                    dlFile = GetFile(rawURL)
-                    wrap = WrapCode(language, dlFile)
-                    parsed = ParseMarkdown(wrap)
-                    body.append(GistBody(file,parsed))
-                #Save the description as the title
-                #print ('tags : ' + str(tags))
-                gistPost = GistPost(item['id'], description, item['html_url'], RemoveGistBlog(tags), item['created_at'], BodyBuilder(body, item['html_url']), item['updated_at'])
-                gistBlogs.append(gistPost)
-        count += 1
-        if count > 1:
-            break
-
+            #Save the description as the title
+            #print ('tags : ' + str(tags))
+            gistPost = GistPost(item['id'], description, item['html_url'], RemoveGistBlog(tags), item['created_at'], "", item['updated_at'], item)
+            gistBlogs.append(gistPost)
     offset = offset + increment
     page += 1
 
-
 '''
 Remove all gistBlogs from list which already exist
-in wordpressPosts, if their
+If gistblogs exist without matching `updated_at` values, than means new versions exist,
+delete the wordpress post so the new version can be uploaded.
 '''
 for wordpressPost in wordpressPosts:
     for gistBlog in gistBlogs:
-        wpField = GetCustomFields(wordPressPost.custom_fields) #Gets the custom_fields in a dict
+        wpField = GetCustomFields(wordpressPost.custom_fields) #Gets the custom_fields in a dict
+        print (wpField)
         if gistBlog.id == wpField['id']:
             #Post already exists in wordpress
             if gistBlog.updated_at == wpField['updated_at']:
@@ -138,10 +121,16 @@ Post remaining gistBlogs to Wordpress
 '''
 gistsPosted = 0
 for gistBlog in gistBlogs:
+    RenderMarkdown(gistBlog)
     post = WordPressPost()
     titleToPost = SanitizeDescription(gistBlog.title)
     post.title = titleToPost
     post.content = gistBlog.body
+    print ('---')
+    print ('---')
+    print (gistBlog.body)
+    print ('---')
+    print ('---')
     post.terms_names = {
             'post_tag': gistBlog.tags,
             'category': ['hacks'],

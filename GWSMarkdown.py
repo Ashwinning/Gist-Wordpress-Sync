@@ -1,6 +1,7 @@
 import requests
 from GWSUtils import *
 from GWSSettings import *
+from GWSGist import *
 
 
 '''
@@ -48,3 +49,22 @@ def BodyBuilder(body, url):
         text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
         text += '</div>'
         text += '\n'
+    return text
+
+def RenderMarkdown(gistPost):
+    body = []
+    print(gistPost.item['files'])
+    for file in gistPost.item['files']:
+        language = gistPost.item['files'][file]['language']
+        if (language == 'Markdown'):
+            rawURL = gistPost.item['files'][file]['raw_url']
+            dlFile = GetFile(rawURL)
+            parsed = ParseMarkdown(dlFile)
+            body.append(GistBody(file, parsed))
+        else:
+            rawURL = gistPost.item['files'][file]['raw_url']
+            dlFile = GetFile(rawURL)
+            wrap = WrapCode(language, dlFile)
+            parsed = ParseMarkdown(wrap)
+            body.append(GistBody(file,parsed))
+    gistPost.body = BodyBuilder(body, gistPost.item['html_url'])

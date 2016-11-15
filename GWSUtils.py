@@ -15,8 +15,7 @@ Removes the gistblog hashtag from a list
 and returns the remaining hashtags
 '''
 def RemoveGistBlog(tags):
-    if 'gistblog' in tags:
-        tags.remove('gistblog')
+    tags.remove('gistblog')
     return tags;
 
 
@@ -79,6 +78,6 @@ Stores custom fields from WordPressPost to a dictionary.
 '''
 def GetCustomFields(custom_fields):
     dict = {}
-    for custom_field in WordPressPost.custom_fields:
+    for custom_field in custom_fields:
         dict[custom_field['key']] = custom_field['value']
     return dict
