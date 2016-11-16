@@ -1,3 +1,11 @@
+# Gist-Wordpress-Sync
+
+A Python application to sync Gists with WordPress.
+
+## Usage
+
+## Notes
+
 ### `GistPost()`
 The class that hold data collected from gists, to be put into [WordPress post objects](http://python-wordpress-xmlrpc.readthedocs.io/en/latest/ref/wordpress.html#WordPressPost) to be posted.
 - `updated_at` is used to check if the latest iteration of the gist has been posted to WordPress.
