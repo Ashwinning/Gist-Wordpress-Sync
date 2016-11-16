@@ -27,6 +27,12 @@ GITHUB_USERNAME=github_username
 
 ## Notes
 
+The biggest downside currently is that the application needs to be manually invoked everytime changes need to be synced. (This is because webhooks/events are not available on gists.)
+
+In the future, this app could potentially be compiled and bundled as a wordpress plugin, which can then be run as cron job to sync posts and gists.
+
+## Function Reference
+
 ### `GistPost()`
 The class that hold data collected from gists, to be put into [WordPress post objects](http://python-wordpress-xmlrpc.readthedocs.io/en/latest/ref/wordpress.html#WordPressPost) to be posted.
 - `updated_at` is used to check if the latest iteration of the gist has been posted to WordPress.
