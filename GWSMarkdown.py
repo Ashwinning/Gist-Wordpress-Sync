@@ -1,3 +1,4 @@
+import operator
 import requests
 from GWSUtils import *
 from GWSSettings import *
@@ -42,13 +43,21 @@ Generates and adds the links to the files.
 '''
 def BodyBuilder(body, url):
     text = ""
+
+    #Sort body objects by filename
+    body.sort(key=lambda x: x.filename)
+
+    #Bool to track if document contains any Markdown
+    markdownExists = False
+
     for thing in body:
         if thing.language == 'Markdown':
+            markdownExists = True
             text += thing.content
             text += '\n'
             '''
             text += '<div class="gist-meta">'
-            text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
+            text += '<a target=_blank href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
             text += '</div>'
             text += '\n'
             '''
@@ -59,6 +68,11 @@ def BodyBuilder(body, url):
             text += '\n'
             text += thing.content
             text += '\n'
+
+        #If markdown does not exist in body
+        if not markdownExists:
+            #Add title to top
+            text = '<h1>' + thing.description + '</h1> \n' + text
     return text
 
 def RenderMarkdown(gistPost):
@@ -70,11 +84,11 @@ def RenderMarkdown(gistPost):
             rawURL = gistPost.item['files'][file]['raw_url']
             dlFile = GetFile(rawURL)
             parsed = ParseMarkdown(dlFile)
-            body.append(GistBody(file, parsed))
+            body.append(GistBody(file, gistPost.item['description'], parsed, language))
         else:
             rawURL = gistPost.item['files'][file]['raw_url']
             dlFile = GetFile(rawURL)
             wrap = WrapCode(language, dlFile)
             parsed = ParseMarkdown(wrap)
-            body.append(GistBody(file,parsed))
+            body.append(GistBody(file, gistPost.item['description'], parsed,language))
     gistPost.body = BodyBuilder(body, gistPost.item['html_url'])

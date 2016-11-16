@@ -3,7 +3,7 @@ import requests
 import json
 #Requirements for python-wordpress-xmlrpc
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
+from wordpress_xmlrpc.methods.posts import GetPosts, NewPost, DeletePost
 from wordpress_xmlrpc.methods import taxonomies
 from wordpress_xmlrpc.compat import xmlrpc_client
 import datetime, xmlrpclib
@@ -103,7 +103,6 @@ delete the wordpress post so the new version can be uploaded.
 for wordpressPost in wordpressPosts:
     for gistBlog in gistBlogs:
         wpField = GetCustomFields(wordpressPost.custom_fields) #Gets the custom_fields in a dict
-        #print (wpField)
         if gistBlog.id == wpField['gistid']:
             #Post already exists in wordpress
             if gistBlog.updated_at == wpField['updated_at']:
