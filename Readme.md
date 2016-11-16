@@ -1,6 +1,7 @@
 # Gist-Wordpress-Sync
 
 A Python application to sync Gists with WordPress.
+
 Example : http://hacks.ash.wine
 
 ## Requirements
