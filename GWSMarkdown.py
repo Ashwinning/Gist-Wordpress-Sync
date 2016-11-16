@@ -38,17 +38,27 @@ def WrapCode(language, text):
 
 '''
 Generates and adds the links to the files.
+`body` is a List of `GistBody` Objects
 '''
 def BodyBuilder(body, url):
     text = ""
     for thing in body:
-        #print ('thing ' + thing.content)
-        text += thing.content
-        text += '\n'
-        text += '<div class="gist-meta">'
-        text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
-        text += '</div>'
-        text += '\n'
+        if thing.language == 'Markdown':
+            text += thing.content
+            text += '\n'
+            '''
+            text += '<div class="gist-meta">'
+            text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
+            text += '</div>'
+            text += '\n'
+            '''
+        else:
+            text += '<div class="gist-meta">'
+            text += '<a href="' + url + GenerateAnchor(thing.filename) + '">'+thing.filename+'</a>'
+            text += '</div>'
+            text += '\n'
+            text += thing.content
+            text += '\n'
     return text
 
 def RenderMarkdown(gistPost):
