@@ -73,6 +73,9 @@ def BodyBuilder(body, url):
         if not markdownExists:
             #Add title to top
             text = '<h1>' + thing.description + '</h1> \n' + text
+
+        #Wrap in the gist div
+        text = '<div class="gist markdown-body gist-file"' + text + '</div>'
     return text
 
 def RenderMarkdown(gistPost):
