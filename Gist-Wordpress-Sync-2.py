@@ -36,7 +36,7 @@ Create the Wordpress Client which will retrieve and post posts
 '''
 wp = Client(settings['WORDPRESS_URL']+'/xmlrpc.php', settings['WORDPRESS_USERNAME'], settings['WORDPRESS_PASSWORD'])
 
-
+print('Getting Wordpress Posts')
 '''
 Get all Wordpress posts (in batches of 20) from the specified category.
 And add all the titles to the wordpressPosts list.
@@ -53,10 +53,15 @@ while True:
         #if it's in the specified category, add it to the list
         if settings['WORDPRESS_CATEGORY'] in str(post.terms):
             wordpressPosts.append(post)
+            print ('id : ' + post.id)
+            print ('title : ' + post.title)
+            fields = GetCustomFields(post.custom_fields)
+            print ('gistid : ' + fields['gistid'])
+            print ('---')
     wpOffset = wpOffset + wpIncrement
 
 
-
+print('Getting Gists')
 '''
 Get all Gists (in batches of 20)
 And add all the gists with #gistblog to the gistBlogs list.
@@ -82,7 +87,6 @@ while True:
         #if it's got the gistblog hashtag, add it to the list
         if GistBlogExists(tags):
             print (description)
-            print (item['updated_at'])
             print ('---')
             #Save the description as the title
             #print ('tags : ' + str(tags))
@@ -99,8 +103,8 @@ delete the wordpress post so the new version can be uploaded.
 for wordpressPost in wordpressPosts:
     for gistBlog in gistBlogs:
         wpField = GetCustomFields(wordpressPost.custom_fields) #Gets the custom_fields in a dict
-        print (wpField)
-        if gistBlog.id == wpField['id']:
+        #print (wpField)
+        if gistBlog.id == wpField['gistid']:
             #Post already exists in wordpress
             if gistBlog.updated_at == wpField['updated_at']:
                 #Exact post exists, remove it from our gistblog list
@@ -126,11 +130,6 @@ for gistBlog in gistBlogs:
     titleToPost = SanitizeDescription(gistBlog.title)
     post.title = titleToPost
     post.content = gistBlog.body
-    print ('---')
-    print ('---')
-    print (gistBlog.body)
-    print ('---')
-    print ('---')
     post.terms_names = {
             'post_tag': gistBlog.tags,
             'category': ['hacks'],
@@ -141,13 +140,13 @@ for gistBlog in gistBlogs:
         'value': gistBlog.updated_at
         })
     post.custom_fields.append({
-        'key': 'id',
+        'key': 'gistid',
         'value': gistBlog.id
         })
     post.post_status = 'publish'
     timestamp = TimeSanitizer(gistBlog.created_at)
     post.date = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M")
-    #post.id = wp.call(NewPost(post))
+    post.id = wp.call(NewPost(post))
     gistsPosted += 1
     print (str(gistsPosted) + ') ' + titleToPost + ' posted.')
 print ('COMPLETE! ' + str(gistsPosted) + ' new gists posted.')

@@ -53,7 +53,7 @@ def BodyBuilder(body, url):
 
 def RenderMarkdown(gistPost):
     body = []
-    print(gistPost.item['files'])
+    #print(gistPost.item['files'])
     for file in gistPost.item['files']:
         language = gistPost.item['files'][file]['language']
         if (language == 'Markdown'):
