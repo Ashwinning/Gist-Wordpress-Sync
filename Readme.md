@@ -23,7 +23,12 @@ GITHUB_USERNAME=github_username
 3. Optionally you can add a `GITHUB_ACCESS_TOKEN` (for higher rate limits etc.) and a `WORDPRESS_CATEGORY` if you want to sync content with a particular category in your blog.
 4. In the description of the gists you want to sync, add `#gistblog`.
 5. You can additionally add other hashtags to your description, those will be parsed over to Wordpress as tags for the post.
-6. Run `python Gist-Wordpress-Sync-2.py`
+6. In your wordpress header, link the CSS required to correctly highlight/display code snippets and content.
+```CSS
+<link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/frameworks-31e369ccd2b23a1eccde83f03ef36eafff1f7b9025f6042ccac33a7915753de2.css" integrity="sha256-MeNpzNKyOh7M3oPwPvNur/8fe5Al9gQsysM6eRV1PeI=" media="all" rel="stylesheet" />
+<link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github-f52c8c687f8b759e77e94e3641edb1c5f49d6e8e0738ef162a66361316566cff.css" integrity="sha256-9SyMaH+LdZ536U42Qe2xxfSdbo4HOO8WKmY2ExZWbP8=" media="all" rel="stylesheet" />
+```
+7. Run `python Gist-Wordpress-Sync-2.py`
 
 ## Notes
 
